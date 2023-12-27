@@ -48,7 +48,10 @@ def claimAllkeyshop():
     authorize_button.click()
     time.sleep(10)
 
-    driver.refresh()
+    for i in range(2):
+        driver.refresh()
+        time.sleep(2)
+
     time.sleep(10)
 
 #claimAllkeyshop()

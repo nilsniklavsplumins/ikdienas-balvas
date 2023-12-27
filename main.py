@@ -48,11 +48,12 @@ def claimAllkeyshop():
     authorize_button.click()
     time.sleep(10)
 
+    driver.refresh()
+    time.sleep(2)
+
     for i in range(2):
         driver.refresh()
         time.sleep(2)
-
-    for i in range(2):
         spin = driver.find_element(By.CLASS_NAME, "wheel")
         for i in range(3):
             spin.click()

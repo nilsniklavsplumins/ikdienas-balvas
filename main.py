@@ -10,3 +10,11 @@ from selenium.webdriver.support import expected_conditions as EC
 service = Service()
 option = webdriver.ChromeOptions()
 driver = webdriver.Chrome(service=service, options=option)
+def claimAllkeyshop():
+    url = "https://www.allkeyshop.com/blog/reward-program/"
+    wait = WebDriverWait(driver, timeout=5)
+
+    driver.get(url)
+    time.sleep(2)
+
+#claimAllkeyshop()

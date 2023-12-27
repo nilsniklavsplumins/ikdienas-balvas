@@ -52,6 +52,13 @@ def claimAllkeyshop():
         driver.refresh()
         time.sleep(2)
 
+    for i in range(2):
+        spin = driver.find_element(By.CLASS_NAME, "wheel")
+        for i in range(3):
+            spin.click()
+            time.sleep(0.5)
+        time.sleep(5)
+
     time.sleep(10)
 
 #claimAllkeyshop()

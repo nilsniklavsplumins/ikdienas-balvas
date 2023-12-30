@@ -1,8 +1,13 @@
 import json
 import pyotp
 from seleniumbase import SB
+import os
+from twocaptcha import TwoCaptcha
 
 secret = json.load(open("secret.json", "r"))
+
+apikey_2captcha = os.getenv("APIKEY_2CAPTCHA")
+captcha_solver = TwoCaptcha(apikey_2captcha)
 
 def claimAllkeyshop(sb):
     url = "https://www.allkeyshop.com/blog/reward-program/"
@@ -49,6 +54,32 @@ def claimCoinGecko(sb):
 
     sb.click("button[type='submit']")
     
+def claimmsi(sb):
+    url = "https://rewards.msi.com/earn"
+
+    sb.open(url)
+    sb.maximize_window()
+
+    sb.click("Existing User Login", by="link text")
+    sb.clear("email", by="name")
+    sb.type("email", next(account["username"] for account in secret if account["id"] == "msi"), by="name")
+    sb.clear("password", by="name")
+    sb.type("password", next(account["password"] for account in secret if account["id"] == "msi"), by="name")
+
+    captcha = sb.get_image_url("img[alt='Captcha']")
+    try:
+        result = captcha_solver.normal(captcha, minLen=6, maxLen=6)
+    except Exception as e:
+        print(e)
+    sb.clear("captcha", by="name")
+    sb.type("captcha", result["code"], by="name")
+
+    sb.js_click("login_join_reward", by="name")
+    sb.click("//span[.='Login']", by="xpath")
+    sb.sleep(2)
+    sb.refresh()
+
 with SB(uc_cdp=True, guest_mode=True) as sb:
     claimAllkeyshop(sb)
     claimCoinGecko(sb)
+    claimmsi(sb)

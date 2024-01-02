@@ -4,26 +4,38 @@ from seleniumbase import SB
 import os
 from twocaptcha import TwoCaptcha
 
-secret = json.load(open("secret.json", "r"))
+try:
+    secret = json.load(open("secret.json", "r"))
+except:
+    raise Exception("secret.json nav atrasts")
 
 apikey_2captcha = os.getenv("APIKEY_2CAPTCHA")
+if apikey_2captcha is None:
+    raise Exception("APIKEY_2CAPTCHA nav atrasts")
 captcha_solver = TwoCaptcha(apikey_2captcha)
 
 def claimAllkeyshop(sb):
     url = "https://www.allkeyshop.com/blog/reward-program/"
+    
+    try:
+        username = next(account["username"] for account in secret if account["id"] == "discord")
+        password = next(account["password"] for account in secret if account["id"] == "discord")
+        totp_secret = next(account["totp"] for account in secret if account["id"] == "discord")
+    except:
+        raise Exception("kļūda discord pieejas datos")
 
     sb.open(url)
     sb.maximize_window()
     sb.js_click(".theChampDiscordLogin")
 
     sb.clear("email", by="name")
-    sb.type("email", next(account["username"] for account in secret if account["id"] == "discord"), by="name")
+    sb.type("email", username, by="name")
     sb.clear("password", by="name")
-    sb.type("password", next(account["password"] for account in secret if account["id"] == "discord"), by="name")
+    sb.type("password", password, by="name")
     sb.click("button[type='submit']")
 
     sb.clear("input[autocomplete='one-time-code']")
-    sb.type("input[autocomplete='one-time-code']", pyotp.TOTP(next(account["totp"] for account in secret if account["id"] == "discord")).now())
+    sb.type("input[autocomplete='one-time-code']", pyotp.TOTP(totp_secret).now())
     sb.click("button[type='submit']")
 
     sb.click(".button_afdfd9.lookFilled__19298.colorBrand_b2253e.sizeMedium_c6fa98.grow__4c8a4")
@@ -66,8 +78,8 @@ def claimmsi(sb):
     sb.clear("password", by="name")
     sb.type("password", next(account["password"] for account in secret if account["id"] == "msi"), by="name")
 
-    captcha = sb.get_image_url("img[alt='Captcha']")
     try:
+        captcha = sb.get_image_url("img[alt='Captcha']")
         result = captcha_solver.normal(captcha, minLen=6, maxLen=6)
     except Exception as e:
         print(e)

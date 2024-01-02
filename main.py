@@ -90,7 +90,48 @@ def claimmsi(sb):
     sb.click("//span[.='Login']", by="xpath")
     sb.sleep(2)
 
-with SB(uc_cdp=True, guest_mode=True) as sb:
-    claimAllkeyshop(sb)
-    claimCoinGecko(sb)
-    claimmsi(sb)
+status = {
+    "allkeyshop": False,
+    "coingecko": False,
+    "msi": False
+}
+
+def prompt():
+    os.system("cls")
+    print("Izvēlieties, kuras balvas savākt.")
+    print("1) Allkeyshop " + ("✅" if status["allkeyshop"] else "❌"))
+    print("2) CoinGecko " + ("✅" if status["coingecko"] else "❌"))
+    print("3) MSI " + ("✅" if status["msi"] else "❌"))
+    choice = input("Ievadiet ciparu, burtu S (sākt) vai burtu A (sākt un savākt visu): ").lower().strip()
+    match choice:
+        case "s":
+            start(status)
+        case "a":
+            start(True)
+        case "1":
+            status["allkeyshop"] = not status["allkeyshop"]
+            prompt()
+        case "2":
+            status["coingecko"] = not status["coingecko"]
+            prompt()
+        case "3":
+            status["msi"] = not status["msi"]
+            prompt()
+        case _:
+            prompt()
+
+def start(sites):
+    with SB(uc_cdp=True, guest_mode=True) as sb:
+        if type(sites) is bool:
+            claimAllkeyshop(sb)
+            claimCoinGecko(sb)
+            claimmsi(sb)
+        else:
+            if sites["allkeyshop"]:
+                claimAllkeyshop(sb)
+            if sites["coingecko"]:
+                claimCoinGecko(sb)
+            if sites["msi"]:
+                claimmsi(sb)
+
+prompt()

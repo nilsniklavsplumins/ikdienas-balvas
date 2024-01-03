@@ -1,4 +1,4 @@
-from main import get_solver
+from modules.captcha import get_solver
 
 def claimmsi(sb, secret):
     url = "https://rewards.msi.com/earn"

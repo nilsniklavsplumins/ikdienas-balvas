@@ -1,3 +1,4 @@
 .env
 secret.json
 downloaded_files
+__pycache__

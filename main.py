@@ -1,7 +1,6 @@
 import json
 from seleniumbase import SB
 import os
-from twocaptcha import TwoCaptcha
 from modules.allkeyshop import claimAllkeyshop
 from modules.coingecko import claimCoinGecko
 from modules.msi import claimmsi
@@ -10,11 +9,6 @@ try:
     secret = json.load(open("secret.json", "r"))
 except:
     raise Exception("secret.json nav atrasts")
-
-apikey_2captcha = os.getenv("APIKEY_2CAPTCHA")
-if apikey_2captcha is None:
-    raise Exception("APIKEY_2CAPTCHA nav atrasts")
-captcha_solver = TwoCaptcha(apikey_2captcha)
 
 funcs = {"Allkeyshop": claimAllkeyshop, "CoinGecko": claimCoinGecko, "MSI": claimmsi}
 
@@ -56,8 +50,5 @@ def start(sites):
     with SB(uc_cdp=True, guest_mode=True) as sb:
         for i in sites:
             i(sb, secret)
-
-def get_solver():
-    return captcha_solver
 
 prompt(to_run)

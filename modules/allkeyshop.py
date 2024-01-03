@@ -1,3 +1,4 @@
+import datetime
 import pyotp
 
 def claimAllkeyshop(sb, secret):
@@ -23,6 +24,11 @@ def claimAllkeyshop(sb, secret):
     sb.clear("input[autocomplete='one-time-code']")
     sb.type("input[autocomplete='one-time-code']", pyotp.TOTP(totp_secret).now())
     sb.click("button[type='submit']")
+    sb.sleep(1)
+    if "Invalid two-factor code" in sb.get_page_source():
+        sb.clear("input[autocomplete='one-time-code']")
+        sb.type("input[autocomplete='one-time-code']", pyotp.TOTP(totp_secret).at(datetime.datetime.now(), counter_offset=1))
+        sb.click("button[type='submit']")
 
     sb.click(".button_afdfd9.lookFilled__19298.colorBrand_b2253e.sizeMedium_c6fa98.grow__4c8a4")
     sb.sleep(5)

@@ -90,48 +90,45 @@ def claimmsi(sb):
     sb.click("//span[.='Login']", by="xpath")
     sb.sleep(2)
 
-status = {
-    "allkeyshop": False,
-    "coingecko": False,
-    "msi": False
-}
+funcs = {"Allkeyshop": claimAllkeyshop, "CoinGecko": claimCoinGecko, "MSI": claimmsi}
 
-def prompt():
+to_run = []
+
+def toggle_run(func, arr):
+    if func in arr:
+        arr.remove(func)
+    else:
+        arr.append(func)
+
+def prompt(to_run):
+    global funcs
     os.system("cls")
     print("Izvēlieties, kuras balvas savākt.")
-    print("1) Allkeyshop " + ("✅" if status["allkeyshop"] else "❌"))
-    print("2) CoinGecko " + ("✅" if status["coingecko"] else "❌"))
-    print("3) MSI " + ("✅" if status["msi"] else "❌"))
+    for i in range(len(funcs)):
+        print(str(i+1) + ") " + list(funcs.keys())[i] + ("✅" if list(funcs.values())[i] in to_run else "❌"))
     choice = input("Ievadiet ciparu, burtu S (sākt) vai burtu A (sākt un savākt visu): ").lower().strip()
     match choice:
         case "s":
-            start(status)
+            start(to_run)
         case "a":
-            start(True)
+            for i in funcs:
+                toggle_run(i, to_run)
+            start(to_run)
         case "1":
-            status["allkeyshop"] = not status["allkeyshop"]
-            prompt()
+            toggle_run(claimAllkeyshop, to_run)
+            prompt(to_run)
         case "2":
-            status["coingecko"] = not status["coingecko"]
-            prompt()
+            toggle_run(claimCoinGecko, to_run)
+            prompt(to_run)
         case "3":
-            status["msi"] = not status["msi"]
-            prompt()
+            toggle_run(claimmsi, to_run)
+            prompt(to_run)
         case _:
-            prompt()
+            prompt(to_run)
 
 def start(sites):
     with SB(uc_cdp=True, guest_mode=True) as sb:
-        if type(sites) is bool:
-            claimAllkeyshop(sb)
-            claimCoinGecko(sb)
-            claimmsi(sb)
-        else:
-            if sites["allkeyshop"]:
-                claimAllkeyshop(sb)
-            if sites["coingecko"]:
-                claimCoinGecko(sb)
-            if sites["msi"]:
-                claimmsi(sb)
+        for i in sites:
+            i(sb)
 
-prompt()
+prompt(to_run)

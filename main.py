@@ -34,16 +34,12 @@ def prompt(to_run):
             for i in funcs:
                 toggle_run(i, to_run)
             start(to_run)
-        case "1":
-            toggle_run(claimAllkeyshop, to_run)
-            prompt(to_run)
-        case "2":
-            toggle_run(claimCoinGecko, to_run)
-            prompt(to_run)
-        case "3":
-            toggle_run(claimmsi, to_run)
-            prompt(to_run)
         case _:
+            try:
+                choice = int(choice)
+                toggle_run(list(funcs.values())[choice-1], to_run)
+            except:
+                pass
             prompt(to_run)
 
 def start(sites):

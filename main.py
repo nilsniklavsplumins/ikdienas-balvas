@@ -31,7 +31,7 @@ def prompt(to_run):
         case "s":
             start(to_run)
         case "a":
-            for i in funcs:
+            for i in list(funcs.values()):
                 toggle_run(i, to_run)
             start(to_run)
         case _:

@@ -23,4 +23,4 @@ def claimmsi(sb, secret):
 
     sb.js_click("login_join_reward", by="name")
     sb.click("//span[.='Login']", by="xpath")
-    sb.sleep(2)
+    sb.sleep(4)

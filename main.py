@@ -1,6 +1,8 @@
 import json
+import zipfile
 from seleniumbase import SB
 import os
+import urllib.request
 from modules.allkeyshop import claimAllkeyshop
 from modules.coingecko import claimCoinGecko
 from modules.msi import claimmsi
@@ -43,7 +45,12 @@ def prompt(to_run):
             prompt(to_run)
 
 def start(sites):
-    with SB(uc_cdp=True, guest_mode=True) as sb:
+    if claimAllkeyshop in sites and not os.path.exists("allkeyshop"):
+        urllib.request.urlretrieve("https://clients2.google.com/service/update2/crx?response=redirect&os=linux&arch=x64&os_arch=x86_64&nacl_arch=x86-64&prod=chromium&prodchannel=unknown&prodversion=91.0.4442.4&lang=en-US&acceptformat=crx2,crx3&x=id%3Dbibdjkcebiliphphjbnkngdjgeklgcdf%26installsource%3Dondemand%26uc", "aks.zip")
+        with zipfile.ZipFile("aks.zip", 'r') as zip_ref:
+            zip_ref.extractall("allkeyshop")
+        os.remove("aks.zip")
+    with SB(uc_cdp=True, extension_dir=("allkeyshop" if claimAllkeyshop in sites else None)) as sb:
         for i in sites:
             i(sb, secret)
 
